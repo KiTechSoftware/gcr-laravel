@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY post-setup.sh /usr/local/bin/setup
+COPY setup /usr/local/bin/setup
 RUN chmod +x /usr/local/bin/setup
 
 RUN chown -R www-data:www-data /var/www/html

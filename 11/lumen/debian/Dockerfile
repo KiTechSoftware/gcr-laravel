@@ -32,3 +32,5 @@ USER www-data
 EXPOSE 9000
 
 CMD ["php-fpm"]
+
+LABEL org.opencontainers.image.source https://github.com/kitechsoftware/gcr-laravel

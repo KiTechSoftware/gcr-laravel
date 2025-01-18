@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+echo "Lumen Post-Setup Script"
+
+# Prompt for user input to determine action
+echo "Select an option:"
+echo "1) Download and install a fresh Lumen application"
+echo "2) Set up an existing Lumen project (e.g., from volume)"
+read -p "Enter your choice [1/2]: " choice
+
+if [[ "$choice" == "1" ]]; then
+    echo "Downloading and installing a fresh Lumen application..."
+    composer create-project --prefer-dist laravel/lumen .
+
+elif [[ "$choice" == "2" ]]; then
+    echo "Setting up the existing Lumen project..."
+
+    # Check if .env exists, otherwise copy from .env.example
+    if [ ! -f .env ]; then
+        echo "Creating .env file from .env.example..."
+        cp .env.example .env
+    fi
+
+    # Install dependencies
+    echo "Installing composer dependencies..."
+    composer install --no-dev --optimize-autoloader
+
+else
+    echo "Invalid option. Exiting."
+    exit 1
+fi
+
+# Run common setup steps for both options
+echo "Generating application key..."
+php artisan key:generate --force
+
+echo "Setting permissions for storage and bootstrap/cache..."
+chmod -R 775 storage bootstrap/cache
+
+echo "Post-setup tasks complete."

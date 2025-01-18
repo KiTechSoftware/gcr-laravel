@@ -63,10 +63,6 @@ jobs:
           ${{ vars.IMAGE }}
         tags: |
           ${{ matrix.tag }}
-        labels: |
-          org.opencontainers.image.title=Laravel and Lumen Images
-          org.opencontainers.image.description=Multi-arch images for Laravel and Lumen in Alpine and Debian
-          org.opencontainers.image.vendor="KiTech Software"
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v6
@@ -79,7 +75,6 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
         tags: |
           ${{ vars.IMAGE }}:${{ matrix.tag }}
-        labels: ${{ steps.meta.outputs.labels }}
 
     - name: Scan Docker Image
       uses: aquasecurity/trivy-action@0.29.0

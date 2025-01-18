@@ -41,3 +41,6 @@ EXPOSE 9000
 CMD ["php-fpm"]
 
 LABEL org.opencontainers.image.source https://github.com/kitechsoftware/gcr-laravel
+LABEL org.opencontainers.image.title "Laravel and Lumen Images"
+LABEL org.opencontainers.image.description "Multi-arch images for Laravel and Lumen in Alpine and Debian"
+LABEL org.opencontainers.image.vendor "KiTech Software"

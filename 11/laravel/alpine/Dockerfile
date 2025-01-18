@@ -6,6 +6,7 @@ RUN apk add --no-cache \
     bash \
     curl \
     git \
+    nginx \
     libpng-dev \
     libjpeg-turbo-dev \
     libwebp-dev \
@@ -30,16 +31,25 @@ RUN apk add --no-cache \
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Ensure required Nginx directories exist and set correct permissions
+RUN mkdir -p /var/lib/nginx/tmp /var/log/nginx /run/nginx \
+    && chown -R www-data:www-data /var/lib/nginx /var/log/nginx /run/nginx
+
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
 COPY setup /usr/local/bin/setup
 RUN chmod +x /usr/local/bin/setup
 
+# Adjust PHP-FPM configuration
+RUN sed -i 's/^user = .*/;user = www-data/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/^group = .*/;group = www-data/' /usr/local/etc/php-fpm.d/www.conf
+
 RUN chown -R www-data:www-data /var/www/html
 
-USER www-data
+EXPOSE 80
 
-EXPOSE 9000
-
-CMD ["php-fpm"]
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
 
 LABEL org.opencontainers.image.source=https://github.com/kitechsoftware/gcr-laravel
 LABEL org.opencontainers.image.title="Laravel and Lumen Images"

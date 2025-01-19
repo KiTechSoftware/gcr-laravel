@@ -1,4 +1,4 @@
-FROM ghcr.io/kitechsoftware/php:8.3-fpm-debian
+FROM ghcr.io/kitechsoftware/php:8.4-fpm-debian
 
 LABEL org.opencontainers.image.title="Laravel and Lumen Images"
 LABEL org.opencontainers.image.description="Multi-arch images for Laravel and Lumen in Alpine and Debian"

@@ -71,8 +71,8 @@ jobs:
         file: ./${{ matrix.dockerfile }}/Dockerfile
         platforms: linux/amd64,linux/arm64,linux/arm/v7
         push: true
-        cache-from: type=local,src=/tmp/.buildx-cache
-        cache-to: type=local,dest=/tmp/.buildx-cache,mode=max
+        cache-from: type=registry,ref=ghcr.io/kitechsoftware/laravel-cache:cache
+        cache-to: type=registry,ref=ghcr.io/kitechsoftware/laravel-cache:cache,mode=max
         tags: |
           ${{ vars.IMAGE }}:${{ matrix.tag }}
 

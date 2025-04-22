@@ -14,21 +14,13 @@ jobs:
     strategy:
       matrix:
         dockerfile:
-          - 11/laravel/alpine
-          - 11/laravel/debian
-          - 11/lumen/alpine
-          - 11/lumen/debian
+          - alpine
+          - debian
         include:
-          - dockerfile: 11/laravel/debian
-            tag: "latest"
-          - dockerfile: 11/laravel/alpine
-            tag: "11-laravel-alpine"
-          - dockerfile: 11/laravel/debian
-            tag: "11-laravel-debian"
-          - dockerfile: 11/lumen/alpine
-            tag: "11-lumen-alpine"
-          - dockerfile: 11/lumen/debian
-            tag: "11-lumen-debian"
+          - dockerfile: alpine
+            tag: "alpine"
+          - dockerfile: debian
+            tag: "debian"
       fail-fast: false
 
     steps:
@@ -69,7 +61,7 @@ jobs:
       with:
         context: ./${{ matrix.dockerfile }}
         file: ./${{ matrix.dockerfile }}/Dockerfile
-        platforms: linux/amd64,linux/arm64,linux/arm/v7
+        platforms: linux/amd64,linux/arm64
         push: true
         cache-from: type=registry,ref=ghcr.io/kitechsoftware/laravel-cache:cache
         cache-to: type=registry,ref=ghcr.io/kitechsoftware/laravel-cache:cache,mode=max

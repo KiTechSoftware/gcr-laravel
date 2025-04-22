@@ -7,7 +7,7 @@ GCR-Laravel offers ready-made Docker images for Laravel projects. These images a
 ## Features
 
 - **System Compatibility**:
-    - Supports `linux/amd64`, `linux/arm64`, and `linux/arm/v7` architectures.
+    - Supports `linux/amd64` and `linux/arm64` architectures.
 - **Pre-Built Images**:
     - Available at: `ghcr.io/kitechsoftware/laravel`
 - **Laravel-Optimized**:
@@ -23,10 +23,9 @@ GCR-Laravel offers ready-made Docker images for Laravel projects. These images a
 
 The current image tags available are:
 
-- 11-laravel-alpine
-- 11-laravel-debian
-- 11-lumen-alpine
-- 11-lumen-debian
+- latest
+- alpine
+- debian
 
 ### Downloading an Image
 
@@ -34,7 +33,7 @@ To download an image, use the following command:
 
 ```bash
 # Example: Download the Laravel Alpine image
-docker pull ghcr.io/kitechsoftware/laravel:11-laravel-alpine
+podman pull ghcr.io/kitechsoftware/laravel:latest
 ```
 
 ### Running a Container
@@ -43,13 +42,13 @@ To start a container with the downloaded image:
 
 ```bash
 # Example: Run the Laravel Alpine image
-docker run -p 80:80 --name laravel-app ghcr.io/kitechsoftware/laravel:11-laravel-alpine
+podman run -p 80:80 --name laravel-app ghcr.io/kitechsoftware/laravel:latest
 ```
 
 To run an existing Laravel project, use the following command:
 
 ```sh
-docker run -p 80:80 -v $(pwd):/var/www/html laravel-app
+podman run -p 80:80 -v $(pwd):/var/www/html laravel-app
 ```
 
 #### Optional: Access the Container and Run the Post-Setup Script
@@ -62,7 +61,7 @@ Each image includes a `setup` script to simplify Laravel setup. The script perfo
 
 To access the container, use:
 ```sh
-docker exec -it <container_id> bash
+podman exec -it <container_id> bash
 ```
 
 and run the post-setup script inside the container:
@@ -92,28 +91,18 @@ Here’s how the repository is organized:
 
 ```plaintext
 .
-├── 11
-│   ├── laravel
-│   │   ├── alpine
-│   │   │   ├── Dockerfile
-│   │   │   ├── nginx.conf
-│   │   │   ├── setup
-│   │   ├── debian
-│   │       ├── Dockerfile
-│   │       ├── nginx.conf
-│   │       ├── setup
-│   ├── lumen
-│       ├── alpine
-│       │   ├── Dockerfile
-│       │   ├── nginx.conf
-│       │   ├── setup
-│       ├── debian
-│           ├── Dockerfile
-│           ├── nginx.conf
-│           ├── setup
+├── alpine
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── setup
+├── debian
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── setup
 ├── .github
 │   ├── workflows
 │       ├── build.yml
+│       ├── manual-build.conf
 ```
 
 ---

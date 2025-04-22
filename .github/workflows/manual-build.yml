@@ -2,16 +2,20 @@ name: Manual Build & Push Multi-Arch Docker Images
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Docker image tag (e.g. latest, 11.0, lumen)'
+        required: false
+        default: 'latest'
 
 jobs:
   build-and-push:
-    name: Build and Push - ${{ matrix.tag }}
+    name: Build and Push - ${{ github.event.inputs.tag || 'latest' }}
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         dockerfile: [debian]
-        tag: [latest]
       fail-fast: false
 
     steps:
@@ -33,7 +37,7 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ vars.IMAGE }}
-        tags: ${{ matrix.tag }}
+        tags: ${{ github.event.inputs.tag || 'latest' }}
 
     - name: Build & Push Docker Image
       uses: docker/build-push-action@v6
@@ -43,11 +47,12 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         provenance: false
+        tags: ${{ vars.IMAGE }}:${{ github.event.inputs.tag || 'latest' }}
         cache-from: type=local,src=/tmp/.buildx-cache
 
     - name: Scan Docker Image
       uses: aquasecurity/trivy-action@0.29.0
       with:
-        image-ref: ${{ vars.IMAGE }}:${{ matrix.tag }}
+        image-ref: ${{ vars.IMAGE }}:${{ github.event.inputs.tag || 'latest' }}
         severity: HIGH,CRITICAL
         ignore-unfixed: true

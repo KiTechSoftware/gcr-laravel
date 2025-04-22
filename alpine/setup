@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# Colored output helpers
+info()  { echo -e "\033[1;34m[INFO]\033[0m $1"; }
+error() { echo -e "\033[1;31m[ERROR]\033[0m $1"; }
+
+info "Laravel & Lumen Post-Setup Script"
+
+# Verify required tools
+for cmd in composer php; do
+  command -v "$cmd" >/dev/null 2>&1 || { error "$cmd not found. Please install it."; exit 1; }
+done
+
+# Function to copy files with rsync, fallback to cp
+safe_copy() {
+  local src="$1"
+  local dest="$2"
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a "$src" "$dest"
+  else
+    cp "$src" "$dest"
+  fi
+}
+
+# Prompt user for setup type
+echo "Select an option:"
+echo "1) Download and install a fresh Laravel/Lumen application"
+echo "2) Set up an existing Laravel/Lumen project (e.g., from volume)"
+read -rp "Enter your choice [1/2]: " choice
+
+case "$choice" in
+  1)
+    echo "Choose framework to install:"
+    echo "1) Laravel"
+    echo "2) Lumen"
+    read -rp "Enter your choice [1/2] (default: Laravel): " framework_choice
+
+    framework="laravel"
+    [ "$framework_choice" == "2" ] && framework="lumen"
+
+    read -rp "Enter the version to install (e.g. ^11.0 or leave blank for latest): " version
+    version=${version:-""}
+
+    info "Installing $framework ${version:-latest}..."
+
+    if [ "$framework" == "laravel" ]; then
+      composer create-project --prefer-dist laravel/laravel${version:+:$version} .
+    else
+      composer create-project --prefer-dist laravel/lumen${version:+:$version} .
+    fi
+    ;;
+
+  2)
+    info "Setting up existing project..."
+
+    if [ ! -f .env ]; then
+      info "Creating .env from .env.example..."
+      safe_copy .env.example .env
+    fi
+
+    info "Installing composer dependencies..."
+    composer install --no-dev --optimize-autoloader
+    ;;
+
+  *)
+    error "Invalid option. Please choose 1 or 2."
+    exit 1
+    ;;
+esac
+
+# Common setup
+info "Generating application key..."
+php artisan key:generate --force || info "Key generation may not be required (e.g. Lumen)."
+
+info "Fixing permissions for storage and bootstrap/cache..."
+chmod -R 775 storage bootstrap/cache 2>/dev/null || info "Permission fix skipped — path may not exist."
+
+info "Post-setup tasks complete ✅"

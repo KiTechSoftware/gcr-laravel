@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.title="Laravel and Lumen Images" \
       org.opencontainers.image.source="https://github.com/kitechsoftware/gcr-laravel"
 
 # Install dependencies and PHP extensions
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \ 
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
   && apt-get update && apt-get install -y --no-install-recommends \
   git nginx rsync sqlite3 nodejs \
   && apt-get purge -y --auto-remove \
@@ -19,13 +19,14 @@ RUN mkdir -p /run/nginx /var/lib/nginx/tmp /var/log/nginx \
 # Copy nginx config and setup script
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY setup /usr/local/bin/setup
-RUN chmod +x /usr/local/bin/setup
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /usr/local/bin/setup /entrypoint.sh
 
-WORKDIR /var/www/html
+WORKDIR /app
 
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD curl -f http://localhost || exit 1
 
-CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
+CMD ["/entrypoint.sh"]

@@ -55,7 +55,7 @@ case "$choice" in
   2)
     info "Setting up existing project..."
 
-    if [ ! -f .env ]; then
+    if [ ! -e .env ]; then
       info "Creating .env from .env.example..."
       safe_copy .env.example .env
     fi

@@ -1,3 +1,5 @@
+.PHONY: build manifest-push push clean
+
 # Core variables
 IMAGE=ghcr.io/kitechsoftware/laravel
 DOCKERFILE_DIR=.
@@ -24,6 +26,7 @@ manifest-push:
 	podman push $(IMAGE):arm64
 
 	podman manifest rm $(IMAGE):latest || true
+	podman rmi $(IMAGE):latest || true
 	podman manifest create $(IMAGE):latest
 	@for arch in $(ARCHS); do \
 		podman manifest add $(IMAGE):latest docker://$(IMAGE):$$arch; \

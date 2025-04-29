@@ -6,10 +6,9 @@ LABEL org.opencontainers.image.title="Laravel and Lumen Images" \
       org.opencontainers.image.source="https://github.com/kitechsoftware/gcr-laravel"
 
 # Install dependencies and PHP extensions
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  git bash curl nginx rsync sqlite3 \
-  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-  && apt-get install -y nodejs \
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \ 
+  && apt-get update && apt-get install -y --no-install-recommends \
+  git bash nginx rsync sqlite3 nodejs \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* /tmp/*
 

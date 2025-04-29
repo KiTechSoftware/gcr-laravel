@@ -1,42 +1,17 @@
-FROM ghcr.io/kitechsoftware/php:8.4-fpm-debian
+FROM ghcr.io/kitechsoftware/php:latest
 
 LABEL org.opencontainers.image.title="Laravel and Lumen Images" \
       org.opencontainers.image.description="Multi-arch images for Laravel and Lumen in Alpine and Debian" \
       org.opencontainers.image.vendor="KiTech Software" \
       org.opencontainers.image.source="https://github.com/kitechsoftware/gcr-laravel"
 
-WORKDIR /var/www/html
-
 # Install dependencies and PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      git \
-      bash \
-      nginx \
-      rsync \
-      curl \
-      libonig-dev \
-      libzip-dev \
-      libxml2-dev \
-      sqlite3 \
-      libsqlite3-dev \
-      libpq-dev \
-  && docker-php-ext-install -j"$(nproc)" \
-      pdo_mysql \
-      pdo_pgsql \
-      pdo_sqlite \
-      mbstring \
-      zip \
-      opcache \
+  git bash curl nginx rsync sqlite3 \
+  && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+  && apt-get install -y nodejs \
   && apt-get purge -y --auto-remove \
-      libonig-dev \
-      libzip-dev \
-      libxml2-dev \
-      libsqlite3-dev \
-      libpq-dev \
   && rm -rf /var/lib/apt/lists/* /tmp/*
-
-# Install Composer (with hash check optional)
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Create required directories and set permissions
 RUN mkdir -p /run/nginx /var/lib/nginx/tmp /var/log/nginx \
@@ -46,6 +21,8 @@ RUN mkdir -p /run/nginx /var/lib/nginx/tmp /var/log/nginx \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY setup /usr/local/bin/setup
 RUN chmod +x /usr/local/bin/setup
+
+WORKDIR /var/www/html
 
 EXPOSE 80
 

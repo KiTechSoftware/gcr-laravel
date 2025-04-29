@@ -18,7 +18,7 @@ build:
 	done
 
 # Create and push multi-arch manifest
-push:
+manifest-push:
 	@echo "📦 Creating manifest for Laravel..."
 	podman push $(IMAGE):amd64
 	podman push $(IMAGE):arm64

@@ -8,7 +8,7 @@ LABEL org.opencontainers.image.title="Laravel and Lumen Images" \
 # Install dependencies and PHP extensions
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \ 
   && apt-get update && apt-get install -y --no-install-recommends \
-  git bash nginx rsync sqlite3 nodejs \
+  git nginx rsync sqlite3 nodejs \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/* /tmp/*
 
